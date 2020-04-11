@@ -1,6 +1,8 @@
 rootProject.name = 'FoodHybirdAndroid'
 include ':app'
+// Android Flutter 混编步骤一
 setBinding(new Binding([gradle: this]))
 evaluate(new File(settingsDir.parentFile, 'flutter_food/.android/include_flutter.groovy'))
+
 include ':flutter_food'
 project(':flutter_food').projectDir = new File('../flutter_food')

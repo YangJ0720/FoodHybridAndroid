@@ -23,9 +23,17 @@ android {
         }
     }
 
+    // Android Flutter 混编步骤二
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+            jni.srcDirs = []
+        }
     }
 }
 
@@ -38,6 +46,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    // flutter
+    // Android Flutter 混编步骤三
     implementation project(':flutter')
+    // 依赖阿里混合栈框架
+    implementation project(':flutter_boost')
 }
