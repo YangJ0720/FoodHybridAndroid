@@ -3,6 +3,7 @@ package com.hybrid.food.boost
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import com.hybrid.food.ui.MainActivity
 import com.idlefish.flutterboost.containers.BoostFlutterActivity
 
 object PageRouter {
@@ -14,17 +15,25 @@ object PageRouter {
     const val URL_SYSTEM_SETTINGS = "sample://system_settings"
     // 用户信息界面
     const val URL_USER_INFO = "sample://user_info"
+    // 商铺信息界面
+    const val URL_STORE_INFO = "sample://store_info"
     const val FLUTTER_FRAGMENT_PAGE_URL = "sample://flutterFragmentPage"
 
-    private val pageName: Map<String, String> by lazy {
-        val hashMap = HashMap<String, String>()
-        hashMap[URL_HOME] = "home"
-        hashMap[URL_SYSTEM_SETTINGS] = "system_settings"
-        hashMap[URL_USER_INFO] = "user_info"
+    private val pageName: Map<String, PageHybrid> by lazy {
+        val hashMap = HashMap<String, PageHybrid>()
+        hashMap[URL_HOME] = PageHybrid("home", "com.hybrid.food.ui.MainActivity")
+        hashMap[URL_SYSTEM_SETTINGS] =
+            PageHybrid("system_settings", "com.hybrid.food.ui.SystemSettings")
+        hashMap[URL_USER_INFO] = PageHybrid("user_info", "com.hybrid.food.ui.UserInfoActivity")
+        hashMap[URL_STORE_INFO] = PageHybrid("store_info", "com.hybrid.food.ui.StoreInfoActivity")
         hashMap
     }
 
-    fun openPageByUrl(context: Context, url: String, params: Map<*, *>): Boolean {
+    fun openPageByUrl(
+        context: Context,
+        url: String,
+        params: Map<*, *>
+    ): Boolean {
         return openPageByUrl(context, url, params, 0)
     }
 
@@ -34,14 +43,19 @@ object PageRouter {
         params: Map<*, *>,
         requestCode: Int
     ): Boolean {
-        val path = url.split("\\?").toTypedArray()[0]
-        Log.i(TAG, "openPageByUrl = $path")
+        val path = url.split("?")[0]
+        Log.i(TAG, "url = $url, path = $path")
         return try {
             when {
                 pageName.containsKey(path) -> {
-                    val url = pageName[path] ?: return false
-                    val intent = BoostFlutterActivity.withNewEngine()
-                        .url(url)
+                    val page = pageName[path] ?: return false
+                    val activityClass = Class.forName(
+                        page.activityClass,
+                        false,
+                        PageRouter.javaClass.classLoader
+                    ) as Class<out BoostFlutterActivity>
+                    val intent = BoostFlutterActivity.NewEngineIntentBuilder(activityClass)
+                        .url(page.url)
                         .params(params)
                         .backgroundMode(BoostFlutterActivity.BackgroundMode.opaque)
                         .build(context)

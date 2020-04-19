@@ -2,8 +2,10 @@ package com.hybrid.food.base
 
 import android.app.Application
 import com.hybrid.food.boost.PageRouter
+import com.hybrid.food.ui.MainActivity
 import com.idlefish.flutterboost.FlutterBoost
 import com.idlefish.flutterboost.Utils
+import com.idlefish.flutterboost.containers.BoostFlutterActivity
 import com.idlefish.flutterboost.interfaces.INativeRouter
 import io.flutter.embedding.android.FlutterView
 

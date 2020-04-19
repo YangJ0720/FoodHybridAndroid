@@ -1,5 +1,6 @@
 <resources>
 
+    <!-- 欢迎界面主题 -->
     <style name="SplashTheme" parent="Theme.AppCompat">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@drawable/layer_splash_bg</item>
@@ -12,5 +13,15 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <!-- Flutter Activity -->
+    <style name="FlutterTheme" parent="Theme.AppCompat">
+        <item name="android:configChanges">
+            orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density
+        </item>
+        <item name="android:hardwareAccelerated">true</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
 
 </resources>

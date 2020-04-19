@@ -14,6 +14,7 @@ import com.hybrid.food.LocationOption
 import com.hybrid.food.R
 import com.hybrid.food.channel.FlutterMethodChannel
 import com.idlefish.flutterboost.FlutterBoost
+import com.idlefish.flutterboost.containers.BoostFlutterActivity
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
@@ -23,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 /**
  * @author YangJ
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : BoostFlutterActivity() {
 
     // Channel
     private lateinit var mMethodChannel: MethodChannel
@@ -33,14 +34,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
         initData()
         initView()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        frameLayout.removeAllViews()
         // 停止定位
         val client = mLocationClient
         client.unRegisterLocationListener(mListener)
@@ -53,8 +52,8 @@ class MainActivity : AppCompatActivity() {
         // 初始化Flutter引擎Engine
         val engine = FlutterBoost.instance().engineProvider()
         // 初始化Channel
-        mMethodChannel = FlutterMethodChannel.create(engine.dartExecutor)
-        mMethodChannel.setMethodCallHandler { call, result ->
+        val methodChannel = FlutterMethodChannel.create(engine.dartExecutor)
+        methodChannel.setMethodCallHandler { call, result ->
             when (val method = call.method) {
                 "getLocation" -> {
                     result.success(200)
@@ -66,10 +65,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        this.mMethodChannel = methodChannel
         // 初始化百度定位
         val client = LocationClient(this)
-        client.locOption =
-            LocationOption.getLocationOption()
+        client.locOption = LocationOption.getLocationOption()
         this.mListener = MyLocationListener()
         client.registerLocationListener(mListener)
         this.mLocationClient = client
@@ -94,15 +93,13 @@ class MainActivity : AppCompatActivity() {
             val lat = location.latitude
             println("lat = $lat, lon = $lon")
             val locType = location.locType
-            val address = location.address.address
             val district = location.district
             val street = location.street
             val town = location.town
             val streetNumber = location.streetNumber
-            val text = "address = $address, locType = $locType"
-            println(text)
-            val add = "${location.city}$district$town$street$streetNumber"
-            mMethodChannel.invokeMethod("setLocation", add)
+            val address = "${location.city}$district$town$street$streetNumber"
+            println("address = $address")
+            mMethodChannel.invokeMethod("setLocation", address)
         }
     }
 }
