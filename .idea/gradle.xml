@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="testRunner" value="PLATFORM" />
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="modules">
+          <set>
+            <option value="$USER_HOME$/Flutter/flutter/.pub-cache/git/flutter_boost-69a752f870253bec15413b2a85f6577edf1b4b93/android" />
+            <option value="$USER_HOME$/Flutter/flutter/.pub-cache/hosted/pub.flutter-io.cn/path_provider-1.6.5/android" />
+            <option value="$USER_HOME$/Flutter/flutter/.pub-cache/hosted/pub.flutter-io.cn/path_provider_macos-0.0.4/android" />
+            <option value="$USER_HOME$/Flutter/flutter/.pub-cache/hosted/pub.flutter-io.cn/sqflite-1.2.2+1/android" />
+            <option value="$USER_HOME$/Flutter/flutter/.pub-cache/hosted/pub.flutter-io.cn/webview_flutter-0.3.19+9/android" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/../flutter_food" />
+            <option value="$PROJECT_DIR$/../flutter_food/.android/Flutter" />
+          </set>
+        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>
