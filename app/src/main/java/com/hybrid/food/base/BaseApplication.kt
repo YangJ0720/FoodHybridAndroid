@@ -18,6 +18,9 @@ class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // 初始化百度地图SDK
+        initBaiduMap()
+        // 初始化flutter_boost混合栈框架
         val router = INativeRouter { context, url, urlParams, requestCode, _ ->
             val assembleUrl = Utils.assembleUrl(url, urlParams)
             PageRouter.openPageByUrl(context, assembleUrl, urlParams, requestCode)
@@ -47,11 +50,9 @@ class BaseApplication : Application() {
             .lifecycleListener(listener)
             .build()
         FlutterBoost.instance().init(platform)
-        //
-        initBaiduMap()
     }
 
-    fun initBaiduMap() {
+    private fun initBaiduMap() {
         // 在使用SDK各组件之前初始化context信息，传入ApplicationContext
         SDKInitializer.initialize(this);
         // 自4.3.0起，百度地图SDK所有接口均支持百度坐标和国测局坐标，用此方法设置您使用的坐标类型.
