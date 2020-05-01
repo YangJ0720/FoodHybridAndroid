@@ -39,7 +39,7 @@
             android:theme="@style/FlutterTheme">
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
-                android:resource="@drawable/page_loading" />
+                android:resource="@drawable/ic_page_loading" />
         </activity>
         <!-- 应用程序设置界面 -->
         <activity
@@ -67,7 +67,7 @@
             android:theme="@style/FlutterTheme">
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
-                android:resource="@drawable/page_loading" />
+                android:resource="@drawable/ic_page_loading" />
         </activity>
 
         <meta-data

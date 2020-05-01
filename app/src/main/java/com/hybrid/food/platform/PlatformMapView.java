@@ -20,10 +20,6 @@ public class PlatformMapView implements PlatformView {
     // TAG
     private static final String TAG = "PlatformMapView";
 
-    public PlatformMapView(Context context) {
-        this(context, null, 0);
-    }
-
     public PlatformMapView(Context context, BinaryMessenger messenger, int id) {
         MapView mapView = new MapView(context);
         BaiduMap baiduMap = mapView.getMap();
@@ -38,7 +34,7 @@ public class PlatformMapView implements PlatformView {
     }
 
     @Override
-    public View getView() {
+    public MapView getView() {
         return mMapView;
     }
 
@@ -54,15 +50,6 @@ public class PlatformMapView implements PlatformView {
 
     @Override
     public void onFlutterViewDetached() {
-        MapView mapView = mMapView;
-        if (mapView != null) {
-            ViewParent parent = mapView.getParent();
-            if (parent instanceof ViewGroup) {
-                ((ViewGroup) parent).removeView(mapView);
-            }
-            mapView.getMap().setMyLocationEnabled(false);
-            mMapView = null;
-        }
-        Log.e(TAG, "onFlutterViewDetached: " + mapView.getParent());
+        Log.e(TAG, "onFlutterViewDetached: ");
     }
 }
