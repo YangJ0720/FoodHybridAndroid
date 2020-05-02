@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 用户信息界面点击更换头像 -->
+    <string-array name="item_select_portrait">
+        <item>@string/select_portrait_gallery</item>
+        <item>@string/select_portrait_camera</item>
+    </string-array>
+</resources>

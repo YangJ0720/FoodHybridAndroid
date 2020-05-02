@@ -1,6 +1,8 @@
 package com.hybrid.food.ui
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
@@ -12,14 +14,18 @@ import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
 import com.hybrid.food.LocationOption
 import com.hybrid.food.R
+import com.hybrid.food.channel.FlutterEventChannel
 import com.hybrid.food.channel.FlutterMethodChannel
 import com.idlefish.flutterboost.FlutterBoost
 import com.idlefish.flutterboost.containers.BoostFlutterActivity
 import io.flutter.embedding.android.FlutterView
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.android.synthetic.main.activity_main.*
+
+private const val EVENT_CHANNEL = "event_channel"
 
 /**
  * @author YangJ
@@ -28,6 +34,9 @@ class MainActivity : BoostFlutterActivity() {
 
     // Channel
     private lateinit var mMethodChannel: MethodChannel
+    private lateinit var mEventChannel: EventChannel
+    private var mEventSink: EventChannel.EventSink? = null
+
     // 百度定位
     private lateinit var mLocationClient: LocationClient
     private lateinit var mListener: BDAbstractLocationListener
@@ -38,6 +47,14 @@ class MainActivity : BoostFlutterActivity() {
         initView()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (Activity.RESULT_OK == resultCode && data != null) {
+            val path = data.getStringExtra(UserInfoActivity.EXTRA_PATH)
+            mEventSink?.success(path)
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         // 停止定位
@@ -46,6 +63,9 @@ class MainActivity : BoostFlutterActivity() {
         if (client.isStarted) {
             client.stop()
         }
+        mMethodChannel.setMethodCallHandler(null)
+        mEventSink?.endOfStream()
+        mEventChannel.setStreamHandler(null)
     }
 
     private fun initData() {
@@ -66,6 +86,18 @@ class MainActivity : BoostFlutterActivity() {
             }
         }
         this.mMethodChannel = methodChannel
+        val eventChannel = FlutterEventChannel.factory(engine.dartExecutor, EVENT_CHANNEL)
+        eventChannel.setStreamHandler(object : EventChannel.StreamHandler {
+            override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+                this@MainActivity.mEventSink = events
+            }
+
+            override fun onCancel(arguments: Any?) {
+
+            }
+
+        })
+        this.mEventChannel = eventChannel
         // 初始化百度定位
         val client = LocationClient(this)
         client.locOption = LocationOption.getLocationOption()

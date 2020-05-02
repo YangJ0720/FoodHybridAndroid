@@ -56,7 +56,7 @@ object PageRouter {
 
     fun openPageByUrl(context: Context, url: String, params: Map<*, *>, requestCode: Int): Boolean {
         val path = url.split("?")[0]
-        Log.i(TAG, "url = $url, path = $path")
+        Log.i(TAG, "url = $url, path = $path, params = $params, requestCode = $requestCode")
         return try {
             when {
                 pageName.containsKey(path) -> {

@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.text.TextUtils
 import androidx.core.content.FileProvider
 import com.hybrid.food.BuildConfig
 import java.io.File
@@ -35,13 +36,18 @@ object PortraitUtils {
     /**
      * 相机拍照临时文件
      */
-    private lateinit var mCameraPath: File
+    private const val DEFAULT_CAMERA_PATH = "camera.jpg"
+
+    /**
+     * 照片裁剪临时文件
+     */
+    private var mCachePath: String? = null
 
     /**
      * 从系统相机返回数据中获取uri
      */
     fun getUriByCamera(context: Context): Uri {
-        val file = mCameraPath
+        val file = createOutputFile(context, DEFAULT_CAMERA_PATH)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val authority = BuildConfig.APPLICATION_ID + ".provider"
             FileProvider.getUriForFile(context, authority, file)
@@ -62,7 +68,9 @@ object PortraitUtils {
      */
     private fun onCropPicture(context: Context, uri: Uri, width: Int, height: Int): Intent {
         val child = "${System.currentTimeMillis()}.jpg"
-        return onCropPicture(uri, width, height, Uri.fromFile(createOutputFile(context, child)))
+        val file = createOutputFile(context, child)
+        this.mCachePath = file.absolutePath
+        return onCropPicture(uri, width, height, Uri.fromFile(file))
     }
 
     /**
@@ -98,7 +106,6 @@ object PortraitUtils {
      * 打开系统相册
      */
     fun startSystemPhoto(activity: Activity) {
-        deleteDirectory(activity.externalCacheDir.absolutePath)
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         activity.startActivityForResult(intent, REQUEST_CODE_PICK_PHOTO)
     }
@@ -107,11 +114,8 @@ object PortraitUtils {
      * 打开系统相机
      */
     fun startSystemCamera(activity: Activity) {
-        deleteDirectory(activity.externalCacheDir.absolutePath)
         // 设置相机拍照临时文件
-        val child = "${System.currentTimeMillis()}.jpg"
-        val file = createOutputFile(activity, child)
-        this.mCameraPath = file
+        val file = createOutputFile(activity, DEFAULT_CAMERA_PATH)
         // 创建intent并启动
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.addCategory(Intent.CATEGORY_DEFAULT)
@@ -142,11 +146,25 @@ object PortraitUtils {
     }
 
     /**
+     * 获取照片裁剪临时文件
+     */
+    fun getCachePath(): String? {
+        return mCachePath
+    }
+
+    /**
      * 删除缓存的临时文件
      */
-    private fun deleteDirectory(fileName: String) {
-        File(fileName).listFiles().forEach {
-            if (it.isFile) {
+    fun deleteDirectory(context: Context) {
+        deleteDirectory(context.externalCacheDir)
+    }
+
+    /**
+     * 删除缓存的临时文件
+     */
+    private fun deleteDirectory(file: File) {
+        file.listFiles().forEach {
+            if (it.isFile && !TextUtils.equals(it.absolutePath, mCachePath)) {
                 it.delete()
             }
         }

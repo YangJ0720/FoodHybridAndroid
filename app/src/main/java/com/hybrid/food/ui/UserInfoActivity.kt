@@ -1,12 +1,17 @@
 package com.hybrid.food.ui
 
 import android.app.Activity
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
 import android.os.Build
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import com.hybrid.food.R
 import com.hybrid.food.utils.PortraitUtils
 import com.idlefish.flutterboost.containers.BoostFlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -18,6 +23,10 @@ import io.flutter.plugin.common.MethodChannel
 class UserInfoActivity : BoostFlutterActivity() {
 
     private var mMethodChannel: MethodChannel? = null
+
+    companion object {
+        const val EXTRA_PATH = "extra_path"
+    }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -50,9 +59,20 @@ class UserInfoActivity : BoostFlutterActivity() {
             }
             PortraitUtils.REQUEST_CODE_PICK_CROP -> { // 裁剪
                 data?.let {
-                    val path = it.data.path
+                    val uri = it.data
+                    val path = if (uri == null) {
+                        PortraitUtils.getCachePath()
+                    } else {
+                        uri.path
+                    }
                     this.mMethodChannel?.invokeMethod("setPhoto", path)
+                    // 将用户选择图片的结果返回给上一个界面
+                    val data = Intent()
+                    data.putExtra(EXTRA_PATH, path)
+                    setResult(Activity.RESULT_OK, data)
                 }
+                // 删除缓存的临时文件
+                PortraitUtils.deleteDirectory(this)
             }
         }
     }
@@ -63,7 +83,23 @@ class UserInfoActivity : BoostFlutterActivity() {
         mMethodChannel = null
     }
 
+    private fun showDialog() {
+        val items = resources.getStringArray(R.array.item_select_portrait)
+        AlertDialog.Builder(this).setItems(items, DialogInterface.OnClickListener { dialog, which ->
+            dialog.dismiss()
+            // 判断用户选择
+            when (items[which]) {
+                getString(R.string.select_portrait_gallery) -> { // 从相册选择
+                    PortraitUtils.startSystemPhoto(this)
+                }
+                getString(R.string.select_portrait_camera) -> { // 拍照
+                    PortraitUtils.startSystemCamera(this)
+                }
+            }
+        }).show()
+    }
+
     private fun getPhoto() {
-        PortraitUtils.startSystemPhoto(this)
+        showDialog()
     }
 }
