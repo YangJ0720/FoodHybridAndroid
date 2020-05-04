@@ -29,6 +29,8 @@ object PageRouter {
 
     // 骑手送货位置信息界面
     const val URL_TRANSPORT_MAP = "sample://transport_map"
+    // 搜索界面
+    const val URL_SEARCH_INFO = "sample://search_info"
 
     //
     const val NATIVE_PAGE_URL = "sample://nativePage"
@@ -47,6 +49,7 @@ object PageRouter {
             PageHybrid("product_info", "com.hybrid.food.ui.ProductInfoActivity")
         hashMap[URL_TRANSPORT_MAP] =
             PageHybrid("transport_map", "com.hybrid.food.ui.TransportMapActivity")
+        hashMap[URL_SEARCH_INFO] = PageHybrid("search_info", "com.hybrid.food.ui.SearchActivity")
         hashMap
     }
 
