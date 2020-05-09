@@ -2,11 +2,6 @@ package com.hybrid.food.ui
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewParent
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.core.view.forEach
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
@@ -16,9 +11,7 @@ import com.hybrid.food.map.LocationTools
 import com.hybrid.food.map.PoiSearchTools
 import com.hybrid.food.platform.PlatformMapView
 import com.hybrid.food.platform.PlatformMapViewPlugin
-import com.hybrid.food.platform.PlatformTextView
 import com.idlefish.flutterboost.containers.BoostFlutterActivity
-import io.flutter.embedding.android.FlutterTextureView
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.platform.PlatformView
 
@@ -77,7 +70,7 @@ class TransportMapActivity : BoostFlutterActivity() , PlatformView {
 
     private fun initData() {
         // 定位初始化
-        val tools = LocationTools(this)
+        val tools = LocationTools(this, 5000)
         val listener = MyLocationListener()
         tools.registerLocationListener(listener)
         tools.start()
@@ -128,7 +121,6 @@ class TransportMapActivity : BoostFlutterActivity() , PlatformView {
             if (location == null) {
                 return
             }
-            println("country = ${location.country}, city = ${location.city}")
             val locData = MyLocationData.Builder()
                 .accuracy(location.radius) // 此处设置开发者获取到的方向信息，顺时针0-360
                 .direction(location.direction).latitude(location.latitude)

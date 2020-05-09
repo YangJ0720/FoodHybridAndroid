@@ -140,7 +140,7 @@ object PortraitUtils {
     /**
      * 打开系统裁剪
      */
-    fun startSystemCrop(activity: Activity, data: Uri, width: Int, height: Int) {
+    private fun startSystemCrop(activity: Activity, data: Uri, width: Int, height: Int) {
         val intent = onCropPicture(activity, data, width, height)
         activity.startActivityForResult(intent, REQUEST_CODE_PICK_CROP)
     }

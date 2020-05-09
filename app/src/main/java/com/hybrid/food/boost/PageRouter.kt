@@ -10,8 +10,6 @@ import com.idlefish.flutterboost.containers.BoostFlutterActivity
 
 object PageRouter {
 
-    private const val TAG = "PageRouter"
-
     // 应用程序首页
     const val URL_HOME = "sample://home"
 
@@ -29,8 +27,12 @@ object PageRouter {
 
     // 骑手送货位置信息界面
     const val URL_TRANSPORT_MAP = "sample://transport_map"
+
     // 搜索界面
     const val URL_SEARCH_INFO = "sample://search_info"
+
+    // 选择收货地址界面
+    const val URL_LOCATION_INFO = "sample://location_info"
 
     //
     const val NATIVE_PAGE_URL = "sample://nativePage"
@@ -50,6 +52,8 @@ object PageRouter {
         hashMap[URL_TRANSPORT_MAP] =
             PageHybrid("transport_map", "com.hybrid.food.ui.TransportMapActivity")
         hashMap[URL_SEARCH_INFO] = PageHybrid("search_info", "com.hybrid.food.ui.SearchActivity")
+        hashMap[URL_LOCATION_INFO] =
+            PageHybrid("location_info", "com.hybrid.food.ui.LocationActivity")
         hashMap
     }
 
@@ -59,7 +63,6 @@ object PageRouter {
 
     fun openPageByUrl(context: Context, url: String, params: Map<*, *>, requestCode: Int): Boolean {
         val path = url.split("?")[0]
-        Log.i(TAG, "url = $url, path = $path, params = $params, requestCode = $requestCode")
         return try {
             when {
                 pageName.containsKey(path) -> {

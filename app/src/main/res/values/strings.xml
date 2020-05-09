@@ -4,7 +4,8 @@
 
     <string name="select_portrait_gallery">从相册选取</string>
     <string name="select_portrait_camera">拍照</string>
-    
+
+    <string name="location_failed">定位失败</string>
     <string name="voice_unrecognized">喵&#032;未识别出你说的话</string>
 
 </resources>

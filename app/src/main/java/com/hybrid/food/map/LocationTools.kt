@@ -12,7 +12,7 @@ class LocationTools {
 
     private var mLocationClient: LocationClient
 
-    constructor(context: Context) {
+    constructor(context: Context, scanSpan: Int) {
         // 定位初始化
         val client = LocationClient(context)
         // 通过LocationClientOption设置LocationClient相关参数
@@ -21,7 +21,9 @@ class LocationTools {
         option.isOpenGps = true
         // 设置坐标类型
         option.setCoorType("bd0911")
-        option.setScanSpan(5000)
+        option.setScanSpan(scanSpan)
+        // 设置需要地址信息
+        option.setIsNeedAddress(true)
         // 设置locationClientOption
         client.locOption = option
         //

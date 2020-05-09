@@ -26,6 +26,7 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.android.synthetic.main.activity_main.*
 
 private const val EVENT_CHANNEL = "event_channel"
+private const val TAG = "MainActivity"
 
 /**
  * @author YangJ
@@ -44,7 +45,6 @@ class MainActivity : BoostFlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initData()
-        initView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -76,12 +76,12 @@ class MainActivity : BoostFlutterActivity() {
         methodChannel.setMethodCallHandler { call, result ->
             when (val method = call.method) {
                 "getLocation" -> {
-                    result.success(200)
                     getLocation()
+                    result.success(200)
                 }
                 else -> {
                     result.notImplemented()
-                    Log.e("MainActivity", "没有找到方法: $method")
+                    Log.e(TAG, "没有找到方法: $method")
                 }
             }
         }
@@ -111,26 +111,22 @@ class MainActivity : BoostFlutterActivity() {
         }
     }
 
-    private fun initView() {
-
-    }
-
     private fun getLocation() {
         mLocationClient.start()
     }
 
     inner class MyLocationListener : BDAbstractLocationListener() {
         override fun onReceiveLocation(location: BDLocation) {
-            val lon = location.longitude
-            val lat = location.latitude
-            println("lat = $lat, lon = $lon")
-            val locType = location.locType
+            val city = location.city
+            if (city == null) {
+                mMethodChannel.invokeMethod("setLocation", getString(R.string.location_failed))
+                return
+            }
             val district = location.district
             val street = location.street
             val town = location.town
             val streetNumber = location.streetNumber
-            val address = "${location.city}$district$town$street$streetNumber"
-            println("address = $address")
+            val address = "$city$district$town$street$streetNumber"
             mMethodChannel.invokeMethod("setLocation", address)
         }
     }

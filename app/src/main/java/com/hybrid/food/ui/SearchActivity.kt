@@ -191,7 +191,7 @@ class SearchActivity : BoostFlutterActivity(), EventListener {
                 }
             }
         } else { // 识别开始，结束，音量，音频数据回调
-            if (params != null && !params.isEmpty()) {
+            if (params != null && params.isNotEmpty()) {
                 logTxt += " ;params :$params"
             }
             if (data != null) {
@@ -210,6 +210,6 @@ class SearchActivity : BoostFlutterActivity(), EventListener {
             val length = result.length
             result.substring(2, length - 3)
         }
-        Toast.makeText(this,  result, Toast.LENGTH_SHORT).show()
+        mMethodChannel?.invokeMethod("setResult", result)
     }
 }
