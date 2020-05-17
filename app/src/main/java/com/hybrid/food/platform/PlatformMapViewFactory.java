@@ -7,23 +7,26 @@ import io.flutter.plugin.common.MessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
 
+/**
+ * @author YangJ
+ */
 public class PlatformMapViewFactory extends PlatformViewFactory {
 
+    private PlatformView mView;
     private BinaryMessenger mBinaryMessenger;
-    private PlatformView mPlatformView;
 
     /**
      * @param createArgsCodec the codec used to decode the args parameter of {@link #create}.
      */
-    public PlatformMapViewFactory(MessageCodec<Object> createArgsCodec, BinaryMessenger messenger,
-                                  PlatformView view) {
+    public PlatformMapViewFactory(MessageCodec<Object> createArgsCodec, PlatformView view,
+                                  BinaryMessenger messenger) {
         super(createArgsCodec);
+        this.mView = view;
         this.mBinaryMessenger = messenger;
-        this.mPlatformView = view;
     }
 
     @Override
     public PlatformView create(Context context, int id, Object args) {
-        return mPlatformView;
+        return mView;
     }
 }

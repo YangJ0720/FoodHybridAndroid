@@ -5,11 +5,11 @@ import android.view.View
 import com.baidu.location.BDAbstractLocationListener
 import com.baidu.location.BDLocation
 import com.baidu.mapapi.map.*
+import com.baidu.mapapi.model.LatLngBounds
 import com.baidu.mapapi.search.poi.PoiResult
 import com.hybrid.food.R
 import com.hybrid.food.map.LocationTools
 import com.hybrid.food.map.PoiSearchTools
-import com.hybrid.food.platform.PlatformMapView
 import com.hybrid.food.platform.PlatformMapViewPlugin
 import com.idlefish.flutterboost.containers.BoostFlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -19,7 +19,7 @@ import io.flutter.plugin.platform.PlatformView
  * 骑手送货位置信息界面
  * @author YangJ
  */
-class TransportMapActivity : BoostFlutterActivity() , PlatformView {
+class TransportMapActivity : BoostFlutterActivity(), PlatformView {
 
     private lateinit var mLocationTools: LocationTools
     private lateinit var mListener: BDAbstractLocationListener
@@ -33,10 +33,21 @@ class TransportMapActivity : BoostFlutterActivity() , PlatformView {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        val mapView = MapView(context)
+        val baiduMap = mapView.map
+        // 开启地图的定位图层
+        // 开启地图的定位图层
+        baiduMap.isMyLocationEnabled = true
+        // 设置地图定位配置项
+        // 设置地图定位配置项
+        val configuration = MyLocationConfiguration(
+            MyLocationConfiguration.LocationMode.FOLLOWING, true,
+            null, 0, 0
+        )
+        baiduMap.setMyLocationConfiguration(configuration)
+        this.mMapView = mapView
         // 注册Android Native View到Flutter
-        val mapView = PlatformMapView(this, flutterEngine.dartExecutor.binaryMessenger, 0)
-        PlatformMapViewPlugin.registerWith(flutterEngine, mapView)
-        this.mMapView = mapView.view
+         PlatformMapViewPlugin.registerWith(flutterEngine, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +67,7 @@ class TransportMapActivity : BoostFlutterActivity() , PlatformView {
     }
 
     override fun onDestroy() {
+        println("onDestroy")
         // 停止poi检索
         mPoiSearchTools.setOnGetPoiResultListener(null)
         mPoiSearchTools.destroy()
@@ -85,15 +97,15 @@ class TransportMapActivity : BoostFlutterActivity() , PlatformView {
                 // 根据检索结果设置覆盖物
                 val allPoi = poiResult.allPoi
                 // 绘制商家覆盖物
-                baiduMap.addOverlay(
-                    MarkerOptions().position(allPoi[0].location)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_ano))
-                )
+                val seller = MarkerOptions().position(allPoi[0].location)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_ano))
+                baiduMap.addOverlay(seller)
                 // 绘制骑手覆盖物
-                baiduMap.addOverlay(
-                    MarkerOptions().position(allPoi[1].location)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_aba))
-                )
+                val knight = MarkerOptions().position(allPoi[1].location)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_aba))
+                baiduMap.addOverlay(knight)
+                // 将地图缩放至合适的大小
+                // zoomToSpan(arrayOf(seller, knight))
             }
         })
         this.mPoiSearchTools = poiSearchTools
@@ -101,6 +113,9 @@ class TransportMapActivity : BoostFlutterActivity() , PlatformView {
 
     private fun initView() {
         val baiduMap = mMapView.map
+        // 设置地图缩放级别
+        val mapStatusUpdate = MapStatusUpdateFactory.zoomBy(3.0f)
+        baiduMap.animateMapStatus(mapStatusUpdate)
         // 开启地图的定位图层
         baiduMap.isMyLocationEnabled = true
         // 设置地图定位配置项
@@ -136,6 +151,6 @@ class TransportMapActivity : BoostFlutterActivity() , PlatformView {
     }
 
     override fun dispose() {
-
+        println("dispose")
     }
 }

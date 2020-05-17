@@ -5,6 +5,9 @@ import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewRegistry;
 
+/**
+ * @author YangJ
+ */
 public class PlatformMapViewPlugin {
 
     public static void registerWith(FlutterEngine engine, PlatformView view) {
@@ -12,7 +15,7 @@ public class PlatformMapViewPlugin {
         PlatformViewRegistry registry = engine.getPlatformViewsController().getRegistry();
         String viewTypeId = "platform_map_view";
         PlatformMapViewFactory factory = new PlatformMapViewFactory(StandardMessageCodec.INSTANCE,
-                engine.getDartExecutor().getBinaryMessenger(), view);
+                view, engine.getDartExecutor().getBinaryMessenger());
         registry.registerViewFactory(viewTypeId, factory);
     }
 

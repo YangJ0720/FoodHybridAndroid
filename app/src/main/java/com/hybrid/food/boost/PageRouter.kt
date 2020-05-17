@@ -3,9 +3,9 @@ package com.hybrid.food.boost
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.text.TextUtils
 import android.util.Log
-import com.hybrid.food.ui.MainActivity
-import com.hybrid.food.ui.TransportMapActivity
+import com.hybrid.food.ui.*
 import com.idlefish.flutterboost.containers.BoostFlutterActivity
 
 object PageRouter {
@@ -33,6 +33,8 @@ object PageRouter {
 
     // 选择收货地址界面
     const val URL_LOCATION_INFO = "sample://location_info"
+    //
+    const val URL_SHOW = "sample://show"
 
     //
     const val NATIVE_PAGE_URL = "sample://nativePage"
@@ -40,20 +42,17 @@ object PageRouter {
     //
     const val FLUTTER_FRAGMENT_PAGE_URL = "sample://flutterFragmentPage"
 
-    private val pageName: Map<String, PageHybrid> by lazy {
-        val hashMap = HashMap<String, PageHybrid>()
-        hashMap[URL_HOME] = PageHybrid("home", "com.hybrid.food.ui.MainActivity")
-        hashMap[URL_SYSTEM_SETTINGS] =
-            PageHybrid("system_settings", "com.hybrid.food.ui.SystemSettings")
-        hashMap[URL_USER_INFO] = PageHybrid("user_info", "com.hybrid.food.ui.UserInfoActivity")
-        hashMap[URL_STORE_INFO] = PageHybrid("store_info", "com.hybrid.food.ui.StoreInfoActivity")
-        hashMap[URL_PRODUCT_INFO] =
-            PageHybrid("product_info", "com.hybrid.food.ui.ProductInfoActivity")
-        hashMap[URL_TRANSPORT_MAP] =
-            PageHybrid("transport_map", "com.hybrid.food.ui.TransportMapActivity")
-        hashMap[URL_SEARCH_INFO] = PageHybrid("search_info", "com.hybrid.food.ui.SearchActivity")
-        hashMap[URL_LOCATION_INFO] =
-            PageHybrid("location_info", "com.hybrid.food.ui.LocationActivity")
+    private val pageName: Map<String, Class<out BoostFlutterActivity>> by lazy {
+        val hashMap = HashMap<String, Class<out BoostFlutterActivity>>()
+        hashMap[URL_HOME] = MainActivity::class.java
+        hashMap[URL_SYSTEM_SETTINGS] = SystemSettings::class.java
+        hashMap[URL_USER_INFO] = UserInfoActivity::class.java
+        hashMap[URL_STORE_INFO] = StoreInfoActivity::class.java
+        hashMap[URL_PRODUCT_INFO] = ProductInfoActivity::class.java
+        hashMap[URL_TRANSPORT_MAP] = TransportMapActivity::class.java
+        hashMap[URL_SEARCH_INFO] = SearchActivity::class.java
+        hashMap[URL_LOCATION_INFO] = LocationActivity::class.java
+        hashMap[URL_SHOW] = ShowActivity::class.java
         hashMap
     }
 
@@ -66,14 +65,9 @@ object PageRouter {
         return try {
             when {
                 pageName.containsKey(path) -> {
-                    val page = pageName[path] ?: return false
-                    val activityClass = Class.forName(
-                        page.activityClass,
-                        false,
-                        this.javaClass.classLoader
-                    ) as Class<out BoostFlutterActivity>
+                    val activityClass = pageName[path] ?: return false
                     val intent = BoostFlutterActivity.NewEngineIntentBuilder(activityClass)
-                        .url(page.url)
+                        .url(path)
                         .params(params)
                         .backgroundMode(BoostFlutterActivity.BackgroundMode.opaque)
                         .build(context)

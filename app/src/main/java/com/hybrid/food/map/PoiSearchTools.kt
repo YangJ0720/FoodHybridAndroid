@@ -44,7 +44,7 @@ class PoiSearchTools {
         if (isExistPoi) return
         // 开始执行poi检索
         val options =
-            PoiNearbySearchOption().location(latLng).radius(50000).keyword("商店").pageNum(1)
+            PoiNearbySearchOption().location(latLng).radius(5000).keyword("商店").pageNum(1)
         this.mPoiSearch.searchNearby(options)
     }
 

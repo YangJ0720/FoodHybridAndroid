@@ -2,26 +2,15 @@ package com.hybrid.food.utils
 
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 
 /**
  * @author YangJ
  */
 object PermissionUtils {
-
-    @JvmStatic
-    fun checkSelfPermission(activity: Activity, permission: Array<String>, requestCode: Int): Boolean {
-        val list = permission.filter {
-            val state = ContextCompat.checkSelfPermission(activity, it)
-            PackageManager.PERMISSION_DENIED == state
-        }
-        if (list.isNotEmpty()) {
-            ActivityCompat.requestPermissions(activity, list.toTypedArray(), requestCode)
-            return true
-        }
-        return false
-    }
 
     @JvmStatic
     fun onRequestPermissionsResult(grantResults: IntArray): Boolean {
@@ -34,4 +23,19 @@ object PermissionUtils {
         }
         return result
     }
+}
+
+/**
+ * 动态权限申请
+ */
+fun checkSelfPermission(activity: Activity, permission: Array<String>, requestCode: Int): Boolean {
+    val list = permission.filter {
+        val state = ContextCompat.checkSelfPermission(activity, it)
+        PackageManager.PERMISSION_DENIED == state
+    }
+    if (list.isNotEmpty()) {
+        ActivityCompat.requestPermissions(activity, list.toTypedArray(), requestCode)
+        return false
+    }
+    return true
 }

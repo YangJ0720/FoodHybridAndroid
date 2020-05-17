@@ -13,6 +13,7 @@ import com.hybrid.food.R
 import com.hybrid.food.map.LocationTools
 import com.hybrid.food.map.location.SimpleBDAbstractLocationListener
 import com.hybrid.food.utils.PermissionUtils
+import com.hybrid.food.utils.checkSelfPermission
 import com.idlefish.flutterboost.containers.BoostFlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.BinaryMessenger
@@ -90,7 +91,7 @@ class LocationActivity : BoostFlutterActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
-            if (PermissionUtils.checkSelfPermission(this, permission, REQUEST_CODE_LOCATION)) {
+            if (!checkSelfPermission(this, permission, REQUEST_CODE_LOCATION)) {
                 return
             }
         }
